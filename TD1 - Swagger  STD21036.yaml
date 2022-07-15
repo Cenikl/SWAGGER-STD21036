@@ -1,0 +1,228 @@
+openapi: 3.0.1
+info:
+  title: STD21036
+  description: >-
+    Hello world
+  version: 1.0.0
+servers:
+  - url: https://std21036.com
+  - url: http://std21036.com
+tags:
+  - name: students
+    description: Everything about our students
+  - name: courses
+    description: Everything about our courses
+paths:
+  /students:
+    post:
+      tags:
+        - students
+      summary: Add a new student
+      operationId: addStudent
+      parameters:
+        - name: id
+          in: header
+          description: identification
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+        - name: lastname
+          in: header
+          description: Status values that need to be considered for filter
+          required: true
+          style: simple
+          explode: true
+          schema:
+            type: string
+        - name: firstname
+          in: header
+          description: Status values that need to be considered for filter
+          required: true
+          style: simple
+          explode: true
+          schema:
+            type: string
+      requestBody:
+        description: Student object that needs to be added to the API
+        content:
+          application/:
+            schema:
+              $ref: '#/components/schemas/Students'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Students'
+        required: true
+      responses:
+        '200':
+          description: Good input
+          content:
+            application/:
+              schema:
+               $ref: '#/components/schemas/Students'
+                
+      
+    get:
+      tags:
+        - students
+      summary: Finds Students
+      description: Multiple status values can be provided with comma separated strings
+      operationId: findStudents
+      parameters:
+        - name: page
+          in: query
+          description: Status values that need to be considered for filter
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: integer
+            items:
+              type: integer
+              default: 1
+              enum:
+                - 1
+                - 2
+        - name: page_size
+          in: query
+          description: Status values that need to be considered for filter
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: integer
+            items:
+              type: integer
+              default: 1
+              enum:
+                - 1
+                - 2
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Students'
+  /courses:
+    get:
+      tags:
+        - courses
+      summary: Get the list of courses
+      operationId: getCourses
+      parameters:
+        - name: page
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: page_size
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+       '200':
+          description: List courses
+       '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/BadRequest'
+        
+    post:
+      tags:
+        - courses
+      summary: Create new courses
+      operationId: postCourses
+      requestBody:
+        description: Body of the request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CoursesPost'
+        required: true
+      responses:
+        '200':
+          description: Added to the list course
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoodRequest'
+        
+  /courses/{id}:
+    get:
+      tags:
+        - courses
+      summary: Specified courses
+      operationId: getCoursesById
+      parameters:
+        - name: id
+          in: path
+          description: Id of the course
+          required: true
+          schema:
+            type: integer
+      responses:
+       '200':
+          description: Created
+       '400':
+          description: Bad request
+          
+components:
+  schemas:
+    Students:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        Lastname:
+          type: string
+          example: 1
+        Firstname:
+         type: string
+         
+    BadRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          example: 400_BAD_REQUEST
+        message:
+          type: string
+          example: Parameter are missing
+          
+    GoodRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "jean" 
+        teacher:
+          type: string
+          example: "2022/07/13"
+        createdDatetime:
+          type: string
+          example: "2022/07/13"
+          
+    CoursesPost:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "just"
+        teacher:
+          type: string
+          example: "jinx" 
+        createdDatetime:
+          type: string
+          example: "2022/07/13"
+    
