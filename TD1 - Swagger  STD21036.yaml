@@ -5,6 +5,9 @@ info:
     Hello world
   version: 1.0.0
 servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/HEINYKOLOINA2/std-21036/1.0.0
   - url: https://std21036.com
   - url: http://std21036.com
 tags:
@@ -19,63 +22,35 @@ paths:
         - students
       summary: Add a new student
       operationId: addStudent
-      parameters:
-        - name: id
-          in: header
-          description: identification
-          required: true
-          style: simple
-          explode: false
-          schema:
-            type: integer
-        - name: lastname
-          in: header
-          description: Status values that need to be considered for filter
-          required: true
-          style: simple
-          explode: true
-          schema:
-            type: string
-        - name: firstname
-          in: header
-          description: Status values that need to be considered for filter
-          required: true
-          style: simple
-          explode: true
-          schema:
-            type: string
       requestBody:
         description: Student object that needs to be added to the API
-        content:
-          application/:
-            schema:
-              $ref: '#/components/schemas/Students'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/Students'
         required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Students'
       responses:
         '200':
           description: Good input
           content:
-            application/:
+            application/json:
               schema:
                $ref: '#/components/schemas/Students'
+        '400':
+          description: Bad input
                 
       
     get:
       tags:
         - students
       summary: Finds Students
-      description: Multiple status values can be provided with comma separated strings
+      description: Show students lists
       operationId: findStudents
       parameters:
         - name: page
           in: query
           description: Status values that need to be considered for filter
           required: true
-          style: form
-          explode: true
           schema:
             type: integer
             items:
@@ -88,8 +63,6 @@ paths:
           in: query
           description: Status values that need to be considered for filter
           required: true
-          style: form
-          explode: true
           schema:
             type: integer
             items:
@@ -98,15 +71,134 @@ paths:
               enum:
                 - 1
                 - 2
+      
       responses:
         '200':
-          description: successful operation
+          description: Successful operation
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/Students'
+  /students/{id}:
+    delete:
+      tags:
+       - students
+      summary: Delete a student by Id
+      description: Get the id in the queryElement and delete it
+      operationId: deleteStudent
+      parameters:
+        - name: id
+          in: path
+          description: Get the student by Id
+          required: true
+          style: simple
+          explode: true
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Student deleted successful
+        '400':
+          description: Incorrect Id
+          
+    put:
+      tags:
+       - students
+      summary: "change student information"
+      description: "Update or create a new student"
+      parameters:
+        - name: id
+          in: path
+          description: Get the student by Id
+          required: true
+          style: simple
+          explode: true
+          schema:
+            type: integer
+            default: 1
+        - name: firstname
+          in: query
+          description: Put the first name
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+            default: "john"
+        - name: lastname
+          in: query
+          description: Put the last name
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+            default: "drake"
+      responses:
+        '200':
+          description: Student created/updated
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Students'
+        '400':
+          description: Error, some imput might be wrong
+          content:
+            application/json:
+              schema:
+                type: array
+                items:  
+                  $ref : '#/components/schemas/Students'
+    patch:
+      tags:
+       - students
+      summary: "Change an information about a student"
+      description: 'Update an information about a student'
+      parameters: 
+        - name: id
+          in: path
+          description: Get the student by Id
+          required: true
+          style: simple
+          explode: true
+          schema:
+            type: integer
+            default: 1
+        - name: firstname
+          in: query
+          description: "Update the firstname of the student"
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+            default: "Hitomi"
+        - name: lastname
+          in: query
+          description: "Update the lastname of the student"
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+            default: "MacCarty"
+      responses:
+        '200':
+          description: "Student updated"
+          content: 
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref : '#/components/schemas/Students'
+        '400':
+          description:  "Missing parameters"
+                  
   /courses:
     get:
       tags:
@@ -124,9 +216,14 @@ paths:
           required: true
           schema:
             type: integer
+        
       responses:
        '200':
           description: List courses
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/GoodRequest'
        '400':
           description: Bad request
           content:
@@ -141,18 +238,17 @@ paths:
       operationId: postCourses
       requestBody:
         description: Body of the request
+        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CoursesPost'
-        required: true
       responses:
         '200':
           description: Added to the list course
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GoodRequest'
+        '400':
+          description: Error with the input
+
         
   /courses/{id}:
     get:
@@ -170,6 +266,10 @@ paths:
       responses:
        '200':
           description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoodRequest'
        '400':
           description: Bad request
           
@@ -183,9 +283,10 @@ components:
           example: 1
         Lastname:
           type: string
-          example: 1
+          example: john
         Firstname:
          type: string
+         example: Mccol
          
     BadRequest:
       type: object
@@ -205,10 +306,10 @@ components:
           example: 1
         name:
           type: string
-          example: "jean" 
+          example: "math" 
         teacher:
           type: string
-          example: "2022/07/13"
+          example: "jean"
         createdDatetime:
           type: string
           example: "2022/07/13"
@@ -216,6 +317,9 @@ components:
     CoursesPost:
       type: object
       properties:
+        id:
+          type: integer
+          example: 1
         name:
           type: string
           example: "just"
@@ -225,4 +329,3 @@ components:
         createdDatetime:
           type: string
           example: "2022/07/13"
-    
