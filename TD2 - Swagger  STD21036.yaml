@@ -1,0 +1,653 @@
+openapi: 3.0.0
+info:
+  description: |
+    API that will specifies something
+  version: "1.0.0"
+  title: TD2 - STD21036
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/HEINYKOLOINA2/STD21036/1.0.0
+tags:
+  - name: rooms
+    description: Everything about the rooms
+  - name: movies
+    description: Everything about the movies
+  - name: projections
+    description: Everything about projections
+  - name: categories
+    description: Everything about categories
+
+paths:
+  /rooms:
+    get:
+      tags:
+        - rooms
+      summary: Get the information about the room
+      operationId: getRooms
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - A
+              - B
+        - name: Capacity
+          in: query
+          schema:
+            type: integer
+            example: 100
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                items: array
+                $ref: '#/components/schemas/Room'
+              
+        '400':
+          description: 'Invalid input or room doesn''t exist'
+
+  /rooms/{id}:
+    get:
+      tags:
+        - rooms
+      summary: Finds Room by id
+      operationId: findRoomById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - A
+              - B
+      responses:
+        '200':
+          description: Found the room
+          content:
+            application/json:
+              schema:
+                items: array
+                $ref: '#/components/schemas/Room'
+        '400':
+          description: Invalid id value
+
+  /movies:
+    get:
+      tags:
+        - movies
+      summary: Finds movies
+      operationId: findMovies
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Found the movie
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+        '400':
+          description: Could not find the movie
+    post:
+      tags:
+        - movies
+      summary: Create a new movie
+      operationId: postMovies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref : '#/components/schemas/newMovie'
+      responses:
+        '200':
+          description: 'Movie created'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref : '#/components/schemas/Movie'
+        '400':
+          description: 'Invalid input'
+    put:
+      tags:
+        - movies
+      operationId: putMovies
+      summary: Change data about a movie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref : '#/components/schemas/newMovie'
+      responses:
+        '200':
+          description: 'Movie created/Patched'
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                $ref : '#/components/schemas/Movie'
+        '400':
+          description: 'Invalid input'
+    patch:
+      tags:
+        - movies
+      summary: Update a movie
+      description: | 
+        Possible changes on:
+        * summary: change
+      operationId: patchMovie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              $ref : '#/components/schemas/newMovie'
+            examples:
+              changeSummary:
+                summary: Change the summary
+                value:
+                - id: 1
+                  summary: "something"
+                  
+      responses:
+        '200':
+          description: 'Movie Patched'
+          content:
+            application/json:
+              schema:
+                type: array
+                $ref : '#/components/schemas/Movie'
+        '400':
+          description: 'Invalid input'
+          content: {}
+
+  /movies/{id}:
+    get:
+      tags:
+        - movies
+      summary: Finds movies by id
+      operationId: findMoviesById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Found the movie
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref : '#/components/schemas/Movie'
+        '400':
+          description: Could not find the movie
+    delete:
+      tags:
+        - movies
+      summary: Delete a movie
+      operationId: deleteMovies
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Movie deleted'
+          content: {}
+        '400':
+          description: 'Invalid input'
+          content: {}
+            
+              
+  /projections:
+    get:
+      tags:
+        - projections
+      summary: Get all projections
+      operationId: getProjections
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref : '#/components/schemas/projection'
+        '400':
+          description: "Could not find it"
+    post:
+      tags:
+        - "projections"
+      summary: Create a new projection
+      operationId: postProjection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref : '#/components/schemas/newProjection'
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref : '#/components/schemas/projection'
+        '400':
+          description: "Error"
+          content: {}
+            
+    put:
+      tags:
+        - projections
+      summary: Change a projection
+      operationId: putProjection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref : '#/components/schemas/newProjection'
+      responses:
+        '200':
+          description: 'Movie created/patched'
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                $ref : '#/components/schemas/projection'
+        '400':
+          description: 'Invalid input'
+          content: {}
+    patch:
+      tags:
+        - projections
+      summary: Update projection
+      operationId: patchProjection
+      description: | 
+        Possible changes on:
+        * movieId: change
+        * RoomId: change
+        * hour: change
+        * All: change
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              $ref : '#/components/schemas/newProjection'
+            examples:
+              changeMovieId:
+                summary: Change the movieId
+                value:
+                - id: 1
+                  filmId: 2
+              changeRoomId:
+                summary: Change the roomId
+                value:
+                - id: 1
+                  roomId: 2
+              changeHour:
+                summary: Change the hour
+                value:
+                - id: 1
+                  hour: "2022-07-26T19:17:41.612Z"
+              changeAll:
+                summary: Change all
+                value:
+                - id: 1
+                  filmId: 2
+                  roomId: 2
+                  hour: "2022-07-26T19:17:41.612Z"
+  
+      responses:
+        '200':
+          description: 'Projection created/updated'
+          content: 
+            application/json:
+              schema:
+                type: array
+                $ref : '#/components/schemas/projection'
+
+        '400':
+          description: 'Invalid input'
+          content: {}  
+
+  /projections/{id}:
+    get:
+      tags:
+        - projections
+      summary: Get projection by Id
+      operationId: getProjectionsById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref : '#/components/schemas/projection'
+        '400':
+          description: "Could not find it"
+          content: {}
+            
+    delete:
+      tags:
+        - projections
+      summary: Delete a projection by Id
+      operationId: deleteProjection
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: 'Movie deleted'
+          content: {}
+        '400':
+          description: 'Invalid input'
+          content: {}
+            
+  /categories:
+    get:
+      tags:
+        - categories
+      summary: Categories of film
+      operationId: getCategories
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/category'
+        '400':
+          description: Error
+          content: {}
+    post:
+      tags:
+        - categories
+      summary: Create a new category
+      operationId: postCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/newCategory'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/category'
+        '400':
+          description: Error
+          content: {}
+    put:
+      tags:
+        - categories
+      summary: Change a category
+      operationId: putCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/newCategory'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/category'  
+        '400':
+          description: Error
+          content: {}      
+    patch:
+      tags:
+        - categories
+      summary: Update a category
+      operationId: patchCategory
+      description: | 
+        Possible changes on:
+        * name: change
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              $ref : '#/components/schemas/newCategory'
+            examples:
+              changeName:
+                summary: Change the name of the category
+                value:
+                - id: 1
+                  name: "string"
+      responses:
+        '200':
+          description: 'Category patched'
+          content: 
+            application/json:
+              schema:
+                type: array
+                $ref : '#/components/schemas/category'
+        '400':
+          description: 'Invalid input'
+          content: {}
+
+  /categories/{id}:
+    get:
+      tags:
+        - categories
+      summary: Categories of film by Id
+      operationId: getCategoriesById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/category'
+        '400':
+          description: Error
+          content: {}
+    delete:
+      tags:
+        - categories
+      summary: Delete category by Id
+      operationId: deleteCategory
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: 'Movie deleted'
+          content: {}
+        '400':
+          description: 'Invalid input'
+          content: {}
+  /categories/{movies}:  
+    post:
+      tags:
+        - categories
+      summary: post a film in category
+      operationId: postFilmInCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/newMovie'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/category'
+        '400':
+          description: Error
+          content: {}
+
+components:
+  schemas:
+    Room:
+      type: object
+      properties:
+        id:
+          type: string
+          enum:
+            - A
+            - B
+        Capacity:
+          type: integer
+          example: 100
+    Movie:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Bullets"
+        duration:
+          type: string
+          example: "100mn"
+        summary:
+          type: string
+        realisator:
+          type: string
+          example: "David"
+        releaseDate:
+          type: string
+          format: date-time
+    newMovie:
+      type: object
+      properties:
+        id:
+          type: number
+      allOf:
+        - $ref: '#/components/schemas/Movie'
+    projection:
+      type: object
+      properties:
+        filmId:
+          type: integer
+          example: 1
+        roomId:
+          type: string
+          default: A
+          enum:
+            - A
+            - B
+        hour:
+          type: string
+          format: date-time
+    newProjection:
+      type: object
+      properties:
+        id:
+          type: number
+      allOf:
+        - $ref : '#/components/schemas/projection'
+    category:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Action"
+        movies:
+          type: array
+          items:
+            $ref : '#/components/schemas/Movie'
+    newCategory:
+      type: object
+      properties:
+        id:
+          type: number
+      allOf:
+        - $ref: '#/components/schemas/category'
