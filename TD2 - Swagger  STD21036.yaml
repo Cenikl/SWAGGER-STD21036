@@ -17,6 +17,8 @@ tags:
     description: Everything about projections
   - name: categories
     description: Everything about categories
+  - name: calendar
+    description: Everything about the calendar
 
 paths:
   /rooms:
@@ -575,6 +577,32 @@ paths:
           description: Error
           content: {}
 
+  /calendar:
+    get:
+      tags:
+        - calendar
+      parameters:
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date-time
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                items:
+                $ref: '#/components/schemas/week'
+        400:
+          description: Bad request
+      
 components:
   schemas:
     Room:
@@ -651,3 +679,109 @@ components:
           type: number
       allOf:
         - $ref: '#/components/schemas/category'
+    week:
+      type: array
+      items:
+        properties:
+          date:
+            type: string
+            format: date-time
+          week:
+            type: object
+            properties:
+              monday:
+                type: array
+                items:
+                  properties:
+                    8H00:
+                      type: array
+                      items:
+                        properties:
+                          film:
+                            type: object
+                            allOf:
+                            - $ref: '#/components/schemas/newMovie'
+                          room:
+                            properties:
+                              id:
+                                type: string
+                                enum:
+                                  - A
+                                  - B
+              tuesday:
+                type: array
+                items:
+                  properties:
+                    8H00:
+                      type: array
+                      items:
+                        properties:
+                          film:
+                            type: object
+                            allOf:
+                            - $ref: '#/components/schemas/newMovie'
+                          room:
+                            properties:
+                              id:
+                                type: string
+                                enum:
+                                  - A
+                                  - B
+              wednesday:
+                type: array
+                items:
+                  properties:
+                    8H00:
+                      type: array
+                      items:
+                        properties:
+                          film:
+                            type: object
+                            allOf:
+                            - $ref: '#/components/schemas/newMovie'
+                          room:
+                            properties:
+                              id:
+                                type: string
+                                enum:
+                                  - A
+                                  - B
+              thursday:
+                type: array
+                items:
+                  properties:
+                    8H00:
+                      type: array
+                      items:
+                        properties:
+                          film:
+                            type: object
+                            allOf:
+                            - $ref: '#/components/schemas/newMovie'
+                          room:
+                            properties:
+                              id:
+                                type: string
+                                enum:
+                                  - A
+                                  - B
+              friday:
+                type: array
+                items:
+                  properties:
+                    8H00:
+                      type: array
+                      items:
+                        properties:
+                          film:
+                            type: object
+                            allOf:
+                            - $ref: '#/components/schemas/newMovie'
+                          room:
+                            properties:
+                              id:
+                                type: string
+                                enum:
+                                  - A
+                                  - B
+            
